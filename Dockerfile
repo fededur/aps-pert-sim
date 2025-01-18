@@ -7,11 +7,11 @@ RUN apt-get update && apt-get install -y git && apt-get clean && rm -rf /var/lib
 # Clone GitHub repository
 RUN git clone https://github.com/fededur/aps-pert-sim.git /workspace
 
-# Set WD 
+# Set working directory
 WORKDIR /workspace
 
-# Ensure RMarkdown is installed
-RUN R -e "if (!requireNamespace('rmarkdown', quietly = TRUE)) install.packages('rmarkdown', repos='https://cran.rstudio.com/')"
+# Install required R packages
+RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
-# Render rmarkdown file
+# Render the RMarkdown file
 CMD ["R", "-e", "rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')"]
