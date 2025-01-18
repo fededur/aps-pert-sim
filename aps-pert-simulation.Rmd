@@ -40,10 +40,10 @@ The method was implemented in R programming and the script is available in the h
 
 ```{r, message=FALSE, warning=FALSE, echo=TRUE}
 # packages
-library(knitr)
-library(kableExtra)
 library(tidyverse)
 library(ggplot2)
+library(knitr)
+library(kableExtra)
 
 # supporting functions
 perturbAg <- function(x, rnd_col = "rn"){
@@ -108,42 +108,42 @@ shape = (mean_farm_landarea/ sd_farm_landarea)^2
 scale = (sd_farm_landarea^2)/mean_farm_landarea
 
 set.seed(1234)
-farm_data_actual <- simFarms(50000, shape_parameter = shape, scale_parameter = scale)
+farm_data_actual <- simFarms(2500, shape_parameter = shape, scale_parameter = scale)
 
 farm_data <- tibble(
   actual = farm_data_actual %>% pull(land_area),
   perturbed = perturbAg(farm_data_actual) %>% pull(land_area))
 
-# estimate mpe in cells of 10, 100, 1000 or 10000 farms by sampling 1000 farms in each case
-n <- c(10L,100L,1000L,10000L)
-reps = 1000
+# estimate mpe in cells of 10, 100, and 1000 farms by sampling 100 farms in each case
+n <- c(10L,100L,1000L)
+reps = 100
 
 farm_reps <- map(n, ~ repFarms(farm_data, .x, reps))
 
 f_data <- map(.x = farm_reps,
-            ~ .x %>%
-              group_by(replicate) %>%
-              summarise(mpe = mean((actual - perturbed) / actual) * 100,
-                        n = n(),
-                        .groups = "drop")
-            ) %>%
+              ~ .x %>%
+                group_by(replicate) %>%
+                summarise(mpe = mean((actual - perturbed) / actual) * 100,
+                          n = n(),
+                          .groups = "drop")
+) %>%
   bind_rows()
 
-# estimate mpe and mape for a set of 1000 farms of land areas varying from 1 to 1000 ha
-rn <- runif(n = 1000, min = 0, max = 1)
+# estimate mpe and mape for a set of 100 farms of land areas varying from 1 to 1000 ha
+rn <- runif(n = 100, min = 0, max = 10)
 
 lnd_n <- crossing(
   rn = rn,
-  land_area = seq(1, 1000, by = 0.5))
+  land_area = seq(1, 1000, by = 10))
 
 lnd_i <- crossing(
   rn = rn,
-  land_area = seq(1, 1000, by = 1))
+  land_area = seq(1, 1000, by = 20))
 
 lnd_n_data <- tibble(
   land_area = lnd_n %>% pull(land_area),
   perturbed = perturbAg(lnd_n) %>% pull(land_area)
-  ) %>%
+) %>%
   group_by(land_area) %>%
   summarise(mpe = mean((land_area - perturbed) / land_area) * 100,
             mape = mean((abs(land_area - perturbed)) / land_area) * 100,
@@ -162,7 +162,6 @@ lnd_i_data <- tibble(
 
 
 la_data <- bind_rows(lnd_n_data,lnd_i_data)
-
 ```
 
 # Results
