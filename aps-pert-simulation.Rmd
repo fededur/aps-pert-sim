@@ -1,0 +1,225 @@
+---
+title: "Effect of the APS perturbation routine on farm land area"
+author: 
+  name: "Federico Duranovich"
+  email: federico.duranovich@mpi.govt.nz
+output: 
+  bookdown::html_document2:
+    code_folding: hide
+    fig_caption: true
+---
+
+
+# Objective
+The objective of this study was to quantify the effect of the unit record perturbation routine used in Agriculture Production Statistics (APS) on the accuracy of farm land area estimates for data aggregated at varying cell sizes and for data of varying land areas.
+
+# Background
+Agriculture Production Statistics (APS) uses a perturbation routine designed to enable the publication of official statistics while safeguarding the confidentiality rights of respondents. This technique involves adding random noise to the unit record data and aggregating the data to produce statistics at the desired level (e.g. territorial authority, region, etc.). While adding noise is instrumental for publication purposes as it ensures confidentiality to respondents, this approach comes at the expense of data accuracy.<br/>
+
+At the farm level, the perturbation routine results in about $\pm$ 10 percent difference between the actual response value and the perturbed value. The noise added or subtracted to the data is mostly constant in relative terms, although smaller count measures are greatly affected compared with larger count or magnitude measures. The sign of the perturbation defining the direction of the noise (i.e. addition or subtraction) depends on a uniformly distributed random number that is uniquely assigned to each farm.<br/> 
+
+At the aggregate level, the accuracy of the statistic is highly dependent on the proportion of farms that are added or subtracted data. Accuracy decreases with increasing granularity (i.e. smaller cell sizes). This is because the chances for negative and positive differences cancelling each other in cells with lower number of farms is less compared with cells with a higher number of farms.<br/>
+
+Understanding the perturbation routine and quantifying its effect on the accuracy of statistics is important when using APS data, as it could have direct implications in the quality of advice resulting from the use of this data.<br/>
+
+
+# Method
+The effect of the APS perturbation routine was quantified by simulating the land area of individual farms.<br/>
+To determine the effect of perturbation on farm land area estimates for data aggregated at varying cell sizes, the simulation involved generating a farm land area for 50,000 farms representing the population of NZ farms. The dataset was simulated from a Gamma distribution that assumed an average farm land area of 275 ha and a standard deviation of 46.75 ha. Each farm in the dataset was assigned a uniformly distributed random number between 0 and 1.
+Land area data was perturbed using the APS perturbation routine (see code for routine details). Four sets of samples comprising 10, 100, 1,000 and 10,000 farms were randomly extracted from the dataset. Each set was used to represent different cell sizes with smaller sizes being similar to Territorial Authority cell sizes and larger sizes to Regional cell sizes. The sampling process was replicated 1,000 times using the replacement technique. This was done to calculate the mean percentage error (MPE) of each cell size set, which was used as a metric of (in)accuracy. The MPE represents the average deviation between simulated and perturbed land area values and can be seen as a metric of the noise added by the perturbation routine to the different cell sizes. MPE was calculated as:
+
+$$MPE = \frac{1}{n} \sum \left( \frac{\text{ actual } - \text{ perturbed }}{\text{actual}}\right) \times 100$$
+
+where $actual$ is the simulated land area value of each farm, $perturbed$ is the perturbed land area value of each farm and $n$ is the total number of farms in the cell size (*i.e.* 10, 100. 1,000 or 10,000). <br/>
+
+Data from the simulated population was randomly drawn to calculate aggregations of the total land area of actual and perturbed data and the percent difference between aggregations for each cell size.<br/>
+
+To determine the effect of the magnitude of the value being perturbed on data accuracy, sets of 1,000 farms with unique uniformly distributed random numbers were generated for land areas ranging from 1 to 1,000 ha. Data were perturbed using the APS perturbation routine and the mean absolute percentage error (MAPE) was calculated for each set of farms having the same same land area. The formula for the calculation of MAPE is the like the MPE formula but replaces the $\text{ actual } - \text{ perturbed }$ term with $\lvert\text{ actual } - \text{ perturbed }\rvert$. 
+
+The method was implemented in R programming and the script is available in the hidden shaded boxes in this document.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+# packages
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(ggplot2)
+
+# supporting functions
+perturbAg <- function(x, rnd_col = "rn"){
+  
+  perturb <- function(x,rs){
+    if(is.integer(x)){
+      dplyr::case_when(
+        x == 0 ~ 0,
+        x > 0 & x < 1 & rs <= 0.5 ~ x - 0.1,
+        x > 0 & x < 1 & rs > 0.5 ~ x + 0.1,
+        x >= 1 & x < 10 & rs <= 0.5 ~ x - 1,
+        x >= 1 & x < 10 & rs > 0.5 ~ x + 1,
+        x >= 10 & rs < 0.5 ~ x * ((0.9 - (0.5 - rs)/100)),
+        x >= 10 & rs >= 0.5 ~ x * (1.1 + (rs - 0.5)/100))
+    } else {
+      dplyr::case_when(
+        x == 0 ~ 0.0,
+        x > 0 & x < 1 & rs <= 0.5 ~ x - 0.1,
+        x > 0 & x < 1 & rs > 0.5 ~ x + 0.1,
+        x >= 1 & rs < 0.5 ~ x * (0.9 - (0.5 - rs)/100),
+        x >= 1 & rs >= 0.5 ~ x * (1.1 + (rs - 0.5)/100))
+    }
+  }
+  
+  int_cols <- sapply(x, function(col){
+    is.numeric(col) && all(col == as.integer(col))
+  })
+  
+  x[, int_cols] <- unlist(lapply(x[, int_cols], as.integer))
+  
+  rs <- (x[[rnd_col]] * 1000000) %% 1
+  
+  x <- as.data.frame(x[,!(names(x) %in% rnd_col)])
+  
+  for (i in 1:ncol(x)){
+    if (class(x[,i]) %in% c("numeric", "integer")){
+      x[,i] <- mapply(x[,i], FUN = perturb, rs = rs)
+    }
+  }
+  x
+}
+
+simFarms <- function(num_farms, shape_parameter = 2, scale_parameter = 100){
+  
+  land_area <- rgamma(n = num_farms, shape = shape_parameter, scale = scale_parameter)
+  
+  rn <- runif(n = num_farms, min = 0, max = 1)
+  
+  tibble(land_area = land_area,
+         rn =rn)
+}
+
+repFarms <- function(data, n, rep){
+  map_df(1:rep, ~ data %>% sample_n(n), .id = "replicate")
+}
+
+# simulate the farm population
+mean_farm_landarea = 275
+sd_farm_landarea = 275*17/100
+
+shape = (mean_farm_landarea/ sd_farm_landarea)^2
+scale = (sd_farm_landarea^2)/mean_farm_landarea
+
+set.seed(1234)
+farm_data_actual <- simFarms(50000, shape_parameter = shape, scale_parameter = scale)
+
+farm_data <- tibble(
+  actual = farm_data_actual %>% pull(land_area),
+  perturbed = perturbAg(farm_data_actual) %>% pull(land_area))
+
+# estimate mpe in cells of 10, 100, 1000 or 10000 farms by sampling 1000 farms in each case
+n <- c(10L,100L,1000L,10000L)
+reps = 1000
+
+farm_reps <- map(n, ~ repFarms(farm_data, .x, reps))
+
+f_data <- map(.x = farm_reps,
+            ~ .x %>%
+              group_by(replicate) %>%
+              summarise(mpe = mean((actual - perturbed) / actual) * 100,
+                        n = n(),
+                        .groups = "drop")
+            ) %>%
+  bind_rows()
+
+# estimate mpe and mape for a set of 1000 farms of land areas varying from 1 to 1000 ha
+rn <- runif(n = 1000, min = 0, max = 1)
+
+lnd_n <- crossing(
+  rn = rn,
+  land_area = seq(1, 1000, by = 0.5))
+
+lnd_i <- crossing(
+  rn = rn,
+  land_area = seq(1, 1000, by = 1))
+
+lnd_n_data <- tibble(
+  land_area = lnd_n %>% pull(land_area),
+  perturbed = perturbAg(lnd_n) %>% pull(land_area)
+  ) %>%
+  group_by(land_area) %>%
+  summarise(mpe = mean((land_area - perturbed) / land_area) * 100,
+            mape = mean((abs(land_area - perturbed)) / land_area) * 100,
+            .groups = "drop") %>%
+  mutate(type = "magnitude")
+
+lnd_i_data <- tibble(
+  land_area = lnd_i %>% pull(land_area),
+  perturbed = perturbAg(lnd_i) %>% pull(land_area)
+) %>%
+  group_by(land_area) %>%
+  summarise(mpe = mean((land_area - perturbed) / land_area) * 100,
+            mape = mean((abs(land_area - perturbed)) / land_area) * 100,
+            .groups = "drop") %>%
+  mutate(type = "count")
+
+
+la_data <- bind_rows(lnd_n_data,lnd_i_data)
+
+```
+
+# Results
+
+Figure \@ref(fig:Fig1)a shows that the dispersion of errors associated with the perturbation routine reduces as the number of farms used in the production of statistics increases (i.e. cell size increases). It also shows that positive and negative errors in each cell size are equally distributed.<br/>
+
+The total farm land area calculated from the random sampling of simulated data for each cell size is displayed in Table \@ref(tab:Tab1). As expected, actual and perturbed land area increases with the number of farms in the aggregation. In addition, the relative difference between actual and perturbed aggregations decreases with increasing number of farms. This is because in aggregations including a higher number of farms, the chances of negative and positive errors cancelling each other increases, resulting in anctual and pertubed totals being closer.<br/>
+
+Figure \@ref(fig:Fig1)b illustrates the effect of varying farm land area values on perturbation accuracy, considering the values as magnitudes or counts. Magnitudes are values that can have decimals while counts are whole numbers. Although land area is a magnitude measure this simulation exercise also assumed that it could be a count measure (like cows). The figure shows that while magnitude values remain constant at about 10 percent for the whole range of land areas, count values are significantly affected by the perturbation routine at land areas of less than 10. This is because the perturbation routine does not fraction counts and as consequence a count value of 1 can be perturbed to 0 or 2, resulting in 100 percent error.
+
+```{r Fig1, figures-side, fig.show="hold", out.width="50%", fig.cap="Dispersion of mean percentage error (MPE) of perturbed farm land area as a function of cell size (**a**). Mean absolute percentage error (MAPE) of perturbed land area of 1,000 farms for land area ranging from 1 to 100 ha by data type (**b**)", label="Fig1", warning=FALSE}
+
+par(mar = c(4, 4, .5, .5))
+
+ggplot2::ggplot(f_data) +
+  geom_boxplot(aes(x = as.factor(n), y = mpe)) + 
+  labs(x = "cell size (n)", y = "MPE (%)", tag = "a") +
+  theme(plot.tag = element_text(size = 18),text = element_text(size = 15))
+
+
+ggplot2::ggplot(la_data) +
+  geom_line(aes(x = land_area, y = mape, color=type), linewidth = 1) +
+  geom_point(aes(x = land_area, y = mape, color=type), size = 2) +
+  labs(x = expression(paste("Land area (ha) ", italic("log10 scale"))), y = "MAPE (%)", color = "Data type", tag = "b") +
+  theme(plot.tag = element_text(size = 18), text = element_text(size = 15)) +
+  scale_x_continuous(trans='log10')
+
+```
+$$\\[0.5cm]$$
+
+
+```{r Tab1, label="Tab1", warning=FALSE}
+map(n, ~ farm_data %>%
+                 sample_n(.x) %>%
+                 mutate(n = .x)
+               ) %>%
+  bind_rows() %>%
+  group_by(n) %>%
+  summarise(total_actual = sum(actual),
+            total_perturbed = sum(perturbed),
+            .groups = "drop") %>%
+  mutate(difference = sprintf("%.2f%%",(total_actual - total_perturbed)/total_actual * 100)) %>%
+  kable(caption = "Total land area by cell size",
+        col.names = c('Cell size (n)', 'Actual (ha)', 'Perturbed (ha)', 'Difference (%)'),
+        digits = 2,
+        format.args = list(big.mark = ","),
+        table.attr = "style='width:70%;'",
+        booktabs = T,
+        align='lrrr') %>%
+  kable_styling() 
+
+```
+
+# Implications
+
+* **Aggregation at different cell sizes**. The error associated with low cells sizes is high compared with high cell sizes. In this exercise, it is shown that the error of aggregations including 10 farms can be $\pm$ 10 percent. Consider increase cell size to reduce error^[Note that the cell size chosen should also consider the error associated with sampling defined by the survey design (APS surveys are designed to produce satisfactory results at regional level) and other confidentiality rules (minimum of 3 farms per cell)]
+
+* **Modelling farm level data**. Using perturbed data for farm level modelling should be taken with care particularly if the modelling focus is on modelling small count data as the error induced by perturbation in these data is higher.  
+
+$$\\[2.5cm]$$
