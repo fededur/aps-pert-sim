@@ -31,4 +31,4 @@ WORKDIR /workspace
 RUN R -e "install.packages('rmarkdown', repos='https://cran.rstudio.com/')"
 
 # Command to render the R Markdown file
-CMD ["R", "-e", "rmarkdown::render('/workspace/aps-sim-report.Rmd')"]
+CMD ["R", "-e", "rmarkdown::render('/workspace/report/aps-sim-report.Rmd')"]
