@@ -25,11 +25,19 @@ mkdir -p output
 
 # Render the document using Docker
 echo "Rendering the document..."
-if ! docker run --rm -v "$(pwd)/output:/workspace/output" rmarkdown-renderer; then
+if ! docker run --rm -v "$(pwd)/output:/workspace/output" rmarkdown-renderer R -e "
+  if (file.exists('/workspace/.git')) {
+    system('git -C /workspace pull origin main')
+  } else {
+    system('git clone https://github.com/fededur/aps-pert-sim.git /workspace')
+  }
+  rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')
+"; then
   echo "Error: Docker run failed."
   exit 1
 fi
 
 echo "Rendering complete. The output HTML can be found in the 'output' folder."
+
 
  
