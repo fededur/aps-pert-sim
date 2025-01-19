@@ -14,4 +14,4 @@ RUN git clone --branch ${BRANCH} ${REPO_URL}
 RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
 # Default command to render the main R Markdown file
-CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd')"]
+CMD ["Rscript", "-e", "rmarkdown::render('/aps-pert-sim/aps-pert-simulation.Rmd')"]
