@@ -77,7 +77,7 @@ install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tib
 
 **Render**
 
-  - Open the aps-pert-sim R project in RStudio and run the following R command:
+  - Open the aps-pert-sim R project in RStudio and run the following R command in the console:
 
 ```r
 rmarkdown::render("aps-pert-simulation.Rmd", output_dir = "output")
