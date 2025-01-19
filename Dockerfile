@@ -1,17 +1,18 @@
 # Use the Rocker Verse base image
 FROM rocker/verse:latest
 
-# Install Git for cloning repositories
+# Install Git for cloning the repository
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone the repository (you can specify the branch dynamically)
-ARG REPO_URL=https://github.com/fededur/aps-pert-sim.git
-ARG BRANCH=simplify-workflow
-RUN git clone --branch ${BRANCH} ${REPO_URL} 
+# Clone the repository
+RUN git clone https://github.com/fededur/aps-pert-sim.git /repo
 
-# Install any additional R packages
+# Set the working directory
+WORKDIR /repo
+
+# Install required R packages
 RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
-# Default command to render the main R Markdown file
-CMD ["Rscript", "-e", "rmarkdown::render('/aps-pert-sim/aps-pert-simulation.Rmd')"]
+# Render the R Markdown file
+CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = '/repo/output')"]
