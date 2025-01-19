@@ -42,12 +42,6 @@ The recommended method is to use Docker for simplicity and consistency, as it av
   
   - Open Docker Desktop, sign in to your account, and ensure it is running.
   
-  - Verify installation:
-  
-```bash
-docker --version
-```
-
 **Terminal**
 
   - Use any terminal (e.g., Git Bash, Command Prompt, RStudio Terminal) to run Docker commands.
