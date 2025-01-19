@@ -8,10 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git \
 # Clone the repository (you can specify the branch dynamically)
 ARG REPO_URL=https://github.com/fededur/aps-pert-sim.git
 ARG BRANCH=simplify-workflow
-RUN git clone --branch ${BRANCH} ${REPO_URL} /repo
-
-# Change to the repository directory
-WORKDIR /repo
+RUN git clone --branch ${BRANCH} ${REPO_URL} 
 
 # Install any additional R packages
 RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
