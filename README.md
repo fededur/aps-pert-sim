@@ -1,34 +1,38 @@
 # Effect of the APS perturbation routine on farm land area
 
-This repository helps you produce a document that runs a simulation to quantify the effect of noise in Agricultural Production Statistics (APS) farm land area unit record data. The simulation evaluates how the perturbation routine impacts data accuracy at varying levels of aggregation and farm sizes.
+This repository allows you to produce a document that simulates the impact of the noise addition method applied to unit record data in Agricultural Production Statistics (APS). The simulation explores how this perturbation routine affects the accuracy of APS statistics at different levels of aggregation and for various farm sizes, with a focus on farmland area.
 
-The rendered document contains all the details of the study, including methodology, simulations, and results.
+The document produced contains all the details of the study, including methodology, simulations, and results.
 
 ---
 
-## Rendering the document
-
-The recommended method is to use Docker for simplicity and consistency, as it avoids dependency issues. However, you can also render the document directly with R if Docker is not an option.
 
 
 
-## 1 Project Files
+## 1 Obtain the repository files
 
-Obtain the repository files by either:
+Copy the project files to your local machine using one of the following methods:
 
-  - Cloning the repository (requires Git):
+  - Clone the repository (requires Git)
+  
+    Open a terminal, create a folder for the project, and run: 
      
 ```bash
 git clone https://github.com/fededur/aps-pert-sim.git
 ```
 
-  - Or downloading the repository as a ZIP file from GitHub and extracting it.
+  - Download the repository as a ZIP file:
+  
+   click the green Code button on this page, and select Download ZIP. 
+   Extract the contents to a folder on your machine.
 
 
-## 2 Render
+## 2 Render the document
+
+The recommended method is to use Docker for simplicity and consistency, as it avoids dependency issues. However, you can also render the document directly with R if Docker is not an option.
 
 
-### 2.1 Docker-based rendering
+### Docker-based rendering
 
 **Docker**
 
@@ -59,7 +63,7 @@ cd /path/to/aps-pert-sim
 ./run.sh
 ```
 
-### 2.2 R-based rendering
+### R-based rendering
 
 **R Software** 
  
@@ -83,6 +87,14 @@ install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tib
 rmarkdown::render("aps-pert-simulation.Rmd", output_dir = "output")
 ```
 
-## 3 Output
+## 3 Locate the output
 
-The rendered html document will be found in `output/aps-pert-simulation.html` 
+The rendered HTML document will be saved in the `output` folder within your local project directory. You can find it at:
+
+```bash
+output/aps-pert-simulation.html
+```
+
+Open the file in a web browser to view the results.
+
+
