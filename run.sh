@@ -11,9 +11,3 @@ mkdir -p output
 
 # Run the container and mount the local output folder
 docker run --rm -v "$(pwd)/output:/workspace/output" rmarkdown-renderer
-
-
-
-
-
- 
