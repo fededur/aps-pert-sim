@@ -6,8 +6,13 @@ if ! docker info > /dev/null 2>&1; then
   exit 1
 fi
 
-# Create the local output folder
+# Create the local output directory
 mkdir -p output
 
-# Run the container and mount the local output folder
-docker run --rm -v "$(pwd)/output:/workspace/output" rmarkdown-renderer
+# Get the absolute path for the current directory (Windows-compatible)
+PROJECT_PATH=$(pwd -W)  # Converts to Windows-style path
+OUTPUT_PATH="$PROJECT_PATH/output"
+
+# Run the container with correct paths
+docker run --rm -v "$OUTPUT_PATH:/workspace/output" rmarkdown-renderer
+
