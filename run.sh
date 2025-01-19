@@ -6,12 +6,12 @@ if ! docker info > /dev/null 2>&1; then
   exit 1
 fi
 
-# Create the output directory (if it doesn’t exist)
+# Create the local output folder
 mkdir -p output
 
-# Run the container to render the document
-echo "Rendering the document..."
+# Run the container and mount the local output folder
 docker run --rm -v "$(pwd)/output:/workspace/output" rmarkdown-renderer
+
 
 
 
