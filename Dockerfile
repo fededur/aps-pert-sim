@@ -11,8 +11,5 @@ RUN R -e "install.packages(c('knitr', 'kableExtra', 'rmarkdown'), repos='https:/
 # Set working directory
 WORKDIR /project
 
-# Copy project files
-COPY . /project
-
 # Command to render the R Markdown file
 CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = 'output')"]
