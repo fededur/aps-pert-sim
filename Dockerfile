@@ -11,7 +11,7 @@ RUN git clone https://github.com/fededur/aps-pert-sim.git /workspace
 WORKDIR /workspace
 
 # Install required R packages
-RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tibble', 'purrr'), repos='https://cran.rstudio.com/')"
 
 # Render the RMarkdown file
 CMD ["R", "-e", "rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')"]

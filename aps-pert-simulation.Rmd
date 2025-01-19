@@ -2,7 +2,7 @@
 title: "Effect of the APS perturbation routine on farm land area"
 author: 
   name: "Federico Duranovich"
-  email: federico.duranovich@mpi.govt.nz
+  email: f.n.duranovich@gmail.com
 output: 
   bookdown::html_document2:
     code_folding: hide
@@ -116,7 +116,7 @@ farm_data <- tibble(
 
 # estimate mpe in cells of 10, 100, and 1000 farms by sampling 100 farms in each case
 n <- c(10L,100L,1000L)
-reps = 100
+reps = 10
 
 farm_reps <- map(n, ~ repFarms(farm_data, .x, reps))
 
