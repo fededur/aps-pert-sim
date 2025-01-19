@@ -1,22 +1,22 @@
-# Rocker Tidyverse base image
-FROM rocker/tidyverse:4.3.1
+# Use the Rocker Verse base image
+FROM rocker/verse:latest
 
-# Install Git
-RUN apt-get update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install Git for cloning the repository
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone GitHub repository
-RUN git clone https://github.com/fededur/aps-pert-sim.git /workspace
+# Clone the repository
+RUN git clone https://github.com/fededur/aps-pert-sim.git /repo
 
-# Set working directory
-WORKDIR /workspace
+# Set the working directory
+WORKDIR /repo
+
+# Create the output directory
+RUN mkdir -p /repo/output
 
 # Install required R packages
-RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tibble', 'purrr'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
-# Ensure /workspace/output directory exists
-RUN mkdir -p /workspace/output
-
-# Render the RMarkdown file
-CMD ["R", "-e", "rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')"]
-
+# Default command to render the R Markdown file
+CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = '/repo/output')"]
 
