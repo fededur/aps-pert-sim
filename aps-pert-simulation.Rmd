@@ -217,8 +217,8 @@ map(n, ~ farm_data %>%
   kable_styling()
 ```
 
-$$\\[0.5cm]$$
 
+$$\\[1.5cm]$$
 # Implications
 
 * **Aggregation at different cell sizes**. The error associated with low cells sizes is high compared with high cell sizes. In this exercise, it is shown that the error of aggregations including 10 farms can be $\pm$ 10 percent. Consider increase cell size to reduce error^[Note that the cell size chosen should also consider the error associated with sampling defined by the survey design (APS surveys are designed to produce satisfactory results at regional level) and other confidentiality rules (minimum of 3 farms per cell)]
