@@ -14,7 +14,7 @@ docker run --name $CONTAINER_NAME -v "$(pwd):/project" $IMAGE_NAME
 mkdir -p output
 
 # Copy the report from the container to the local 'output' directory
-docker cp $CONTAINER_NAME:/project/output/aps-pert-simulation.html ./output/
+docker cp $CONTAINER_NAME:/project/output/aps-pert-simulation.html "$(pwd)/output/"
 
 # Clean up Docker container and image
 docker rm $CONTAINER_NAME
