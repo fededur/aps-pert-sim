@@ -11,12 +11,8 @@ RUN git clone https://github.com/fededur/aps-pert-sim.git /repo
 # Set the working directory
 WORKDIR /repo
 
-# Create the output directory
-RUN mkdir -p /repo/output
-
 # Install required R packages
-RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('knitr', 'kableExtra', 'rmarkdown'), repos='https://cran.rstudio.com/')"
 
-# Default command to render the R Markdown file
-CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_file = '/repo/aps-pert-simulation.html')"]
-
+# Default command to render the R Markdown file using a dynamic output directory
+CMD ["sh", "-c", "Rscript -e \"rmarkdown::render('aps-pert-simulation.Rmd', output_file = '${OUTPUT_DIR}/aps-pert-simulation.html')\""]
