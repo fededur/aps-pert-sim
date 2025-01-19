@@ -18,5 +18,5 @@ RUN mkdir -p /repo/output
 RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
 # Default command to render the R Markdown file
-CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = '/repo/output')"]
+CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_file = '/repo/aps-pert-simulation.html')"]
 
