@@ -53,12 +53,7 @@ docker --version
 ```bash
 cd /path/to/aps-pert-sim
 ```
-  - Build the Docker image:
-  
-```bash
-docker build -t rmarkdown-renderer .
-```
-  - Render the document:
+  - Build the Docker image and render the document:
   
 ```bash
 ./run.sh
