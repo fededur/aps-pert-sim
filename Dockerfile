@@ -1,15 +1,23 @@
-# Rocker Tidyverse base image
-FROM rocker/tidyverse:4.3.1
+# Use the Rocker Verse base image
+FROM rocker/verse:latest
 
-# Install Git
-RUN apt-get update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install Git and clean up
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /workspace
+# Default workspace environment variable
+ENV WORKSPACE=/workspace
+ENV RMD_FILE=aps-pert-simulation.Rmd
 
-# Install required R packages
-RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
+# Create the default workspace directory
+RUN mkdir -p ${WORKSPACE}
+
+# Set the working directory
+WORKDIR ${WORKSPACE}
+
+
+# Install additional R packages
+RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio.com/')"
 
 # Command to render the RMarkdown file
-CMD ["R", "-e", "rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')"]
-
+CMD ["sh", "-c", "Rscript -e \"rmarkdown::render('${RMD_FILE}')\""]
