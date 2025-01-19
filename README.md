@@ -50,14 +50,14 @@ docker --version
  
   - Navigate to the project directory:
   
-    ```bash
-    cd /path/to/aps-pert-sim
-    ```
+```bash
+cd /path/to/aps-pert-sim
+```
   - Build the Docker image:
   
-    ```bash
-    docker build -t rmarkdown-renderer .
-    ```
+```bash
+docker build -t rmarkdown-renderer .
+```
   - Render the document:
   
 ```bash
