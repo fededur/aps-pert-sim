@@ -9,8 +9,6 @@ output:
     fig_caption: true
 ---
 
-fefefefe
-
 # Objective
 The objective of this study was to quantify the effect of the unit record perturbation routine used in Agriculture Production Statistics (APS) on the accuracy of farm land area estimates for data aggregated at varying cell sizes and for data of varying land areas.
 
