@@ -56,7 +56,7 @@ cd /path/to/aps-pert-sim
   - Run the script to build the Docker image and render the document:
   
 ```bash
-./run.sh
+./run_report.sh
 ```
 
 ### R-based rendering
