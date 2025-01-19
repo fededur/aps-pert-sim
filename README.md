@@ -51,7 +51,7 @@ The recommended method is to use Docker for simplicity and consistency, as it av
 ```bash
 cd /path/to/aps-pert-sim
 ```
-  - Build the Docker image and render the document:
+  - Build the Docker image and render the document and run:
   
 ```bash
 ./run.sh
@@ -86,7 +86,7 @@ rmarkdown::render("aps-pert-simulation.Rmd", output_dir = "output")
 The rendered HTML document will be saved in the `output` folder within your local project directory. You can find it at:
 
 ```bash
-output/aps-pert-simulation.html
+your-project-folder-/output/aps-pert-simulation.html
 ```
 
 Open the file in a web browser to view the results.
