@@ -45,13 +45,15 @@ The recommended method is to use Docker for simplicity and consistency, as it av
 **Terminal**
 
   - Use any terminal (e.g., Git Bash, Command Prompt, RStudio Terminal) to run Docker commands.
- 
-  - Navigate to the project directory:
+
+**Render**
+
+  - Open your terminal and navigate to the project directory:
   
 ```bash
 cd /path/to/aps-pert-sim
 ```
-  - Build the Docker image and render the document and run:
+  - Run the script to build the Docker image and render the document:
   
 ```bash
 ./run.sh
@@ -73,7 +75,7 @@ cd /path/to/aps-pert-sim
 install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tibble'))
 ```
 
-**Render the document**
+**Render**
 
   - Open the aps-pert-sim R project in RStudio and run the following R command:
 
@@ -86,7 +88,7 @@ rmarkdown::render("aps-pert-simulation.Rmd", output_dir = "output")
 The rendered HTML document will be saved in the `output` folder within your local project directory. You can find it at:
 
 ```bash
-your-project-folder-/output/aps-pert-simulation.html
+cd /path/to/output/aps-pert-simulation.html
 ```
 
 Open the file in a web browser to view the results.
