@@ -5,14 +5,14 @@ FROM rocker/verse:latest
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone the repository
-RUN git clone https://github.com/fededur/aps-pert-sim.git /repo
-
-# Set the working directory
-WORKDIR /repo
-
 # Install required R packages
 RUN R -e "install.packages(c('knitr', 'kableExtra', 'rmarkdown'), repos='https://cran.rstudio.com/')"
 
-# Default command to render the R Markdown file using a dynamic output directory
-CMD ["sh", "-c", "Rscript -e \"rmarkdown::render('aps-pert-simulation.Rmd', output_file = '${OUTPUT_DIR}/aps-pert-simulation.html')\""]
+# Set working directory
+WORKDIR /project
+
+# Copy project files
+COPY . /project
+
+# Command to render the R Markdown file
+CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = 'output')"]
