@@ -5,9 +5,8 @@ FROM rocker/verse:latest
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clone the repository during build
-ARG REPO_URL=https://github.com/fededur/aps-pert-sim.git
-RUN git clone ${REPO_URL} /repo
+# Clone the repository
+RUN git clone https://github.com/fededur/aps-pert-sim.git /repo
 
 # Set the working directory
 WORKDIR /repo
@@ -20,3 +19,4 @@ RUN R -e "install.packages(c('knitr', 'kableExtra'), repos='https://cran.rstudio
 
 # Default command to render the R Markdown file
 CMD ["Rscript", "-e", "rmarkdown::render('aps-pert-simulation.Rmd', output_dir = '/repo/output')"]
+
