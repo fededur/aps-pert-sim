@@ -1,6 +1,6 @@
  
 build:
-	docker build -t rmarkdown-renderer .
+	docker build --no-cache -t rmarkdown-renderer .
 
 run:
 	mkdir -p output
