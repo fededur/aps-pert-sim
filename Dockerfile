@@ -13,5 +13,8 @@ WORKDIR /workspace
 # Install required R packages
 RUN R -e "install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tibble', 'purrr'), repos='https://cran.rstudio.com/')"
 
+# Ensure /workspace/output directory exists
+RUN mkdir -p /workspace/output
+
 # Render the RMarkdown file
 CMD ["R", "-e", "rmarkdown::render('/workspace/aps-pert-simulation.Rmd', output_dir = '/workspace/output')"]
