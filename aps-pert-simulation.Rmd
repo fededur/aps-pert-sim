@@ -203,16 +203,17 @@ map(n, ~ farm_data %>%
   summarise(total_actual = sum(actual),
             total_perturbed = sum(perturbed),
             .groups = "drop") %>%
-  mutate(difference = sprintf("%.2f%%",(total_actual - total_perturbed)/total_actual * 100)) %>%
-  kable(caption = "Total land area by cell size",
-        col.names = c('Cell size (n)', 'Actual (ha)', 'Perturbed (ha)', 'Difference (%)'),
-        digits = 2,
-        format.args = list(big.mark = ","),
-        table.attr = "style='width:70%;'",
-        booktabs = T,
-        align='lrrr') %>%
-  kable_styling() 
-
+  mutate(difference = sprintf("%.2f%%", (total_actual - total_perturbed)/total_actual * 100)) %>%
+  kable(
+    caption = "Total land area by cell size",
+    col.names = c('Cell size (n)', 'Actual (ha)', 'Perturbed (ha)', 'Difference (%)'),
+    digits = 2,
+    format.args = list(big.mark = ","),
+    table.attr = "style='width:70%;'",
+    booktabs = TRUE,
+    align = 'lrrr'
+  ) %>%
+  kable_styling()
 ```
 
 # Implications
