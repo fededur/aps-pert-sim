@@ -1,15 +1,19 @@
 # Effect of the APS perturbation routine on farm land area
 
-This repository allows you to produce a document that simulates the impact of the noise addition method applied to unit record data in Agricultural Production Statistics (APS). The simulation explores how this perturbation routine affects the accuracy of APS statistics at different levels of aggregation and for various farm sizes, with a focus on farmland area.
+<!-- badges: start -->
+<!-- badges: end -->
 
-The document produced contains all the details of the study, including methodology, simulations, and results.
+This repository provides tools to simulate the impact of noise addition methods applied to unit record data in Agricultural Production Statistics (APS). The simulation evaluates how this perturbation routine affects the accuracy of APS statistics at different aggregation levels and for various farm sizes, focusing on farmland area.
+
+The repository includes all necessary resources to reproduce the study, including methodology, simulation steps, and results.
 
 ---
 
+## Getting started
 
+Follow the steps below to set up and render the document.
 
-
-## 1 Obtain the repository files
+## Step 1: Obtain the repository files
 
 Copy the project files to your local machine using one of the following methods:
 
@@ -27,12 +31,12 @@ git clone https://github.com/fededur/aps-pert-sim.git
    Extract the contents to a folder on your machine.
 
 
-## 2 Render the document
+## Step 2: Render the document
 
 The recommended method is to use Docker for simplicity and consistency, as it avoids dependency issues. However, you can also render the document directly with R if Docker is not an option.
 
 
-### Docker-based rendering
+### Option A: Docker-based rendering
 
 **Docker**
 
@@ -44,7 +48,7 @@ The recommended method is to use Docker for simplicity and consistency, as it av
   
 **Terminal**
 
-  - Use any terminal (e.g., Git Bash, Command Prompt, RStudio Terminal) to run Docker commands.
+  - Use any Git Bash or RStudio Terminal to run shell commands.
 
 **Render**
 
@@ -53,7 +57,7 @@ The recommended method is to use Docker for simplicity and consistency, as it av
 ```bash
 cd /path/to/aps-pert-sim
 ```
-  - Run the script to build the Docker image and render the document:
+  - Run the shell script to build the Docker image and render the document:
   
 ```bash
 ./run_report.sh
@@ -77,20 +81,22 @@ install.packages(c('rmarkdown', 'bookdown', 'knitr', 'kableExtra', 'dplyr', 'tib
 
 **Render**
 
-  - Open the aps-pert-sim R project in RStudio and run the following R command in the console:
+  - Open the `aps-pert-sim` project in RStudio and run the following R command in the console:
 
 ```r
 rmarkdown::render("aps-pert-simulation.Rmd", output_dir = "output")
 ```
 
-## 3 Locate the output
+## Step 3: Locate the output
 
-The rendered HTML document will be saved in the `output` folder within your local project directory. You can find it at:
+The rendered document will be saved in the **output** folder within the project directory. To access it:
+
+- Navigate to the **output** folder:
 
 ```bash
 cd /path/to/output/aps-pert-simulation.html
 ```
 
-Open the file in a web browser to view the results.
+Open the **aps-pert-simulation.html** file in your browser to view the report.
 
 
