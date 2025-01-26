@@ -13,4 +13,3 @@ docker run --rm -v "$(pwd -W):/project" -w "//project" $IMAGE_NAME
 docker rmi $IMAGE_NAME
 
 echo "Report generation complete! Check the 'output' directory."
-
